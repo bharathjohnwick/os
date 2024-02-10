@@ -5,4 +5,8 @@
 .vscode*
 xsm
 lex.yy.c
+<<<<<<< HEAD
 mem
+=======
+mem
+>>>>>>> 7cfa73b (Stage 10)

@@ -144,7 +144,11 @@ int machine_instr_req_privilege(int opcode)
 }
 
 /* An interface between lexer and machine */
+<<<<<<< HEAD
 int machine_serve_instruction(char *buffer, int *read_bytes, int max)
+=======
+int machine_serve_instruction(char *buffer, unsigned long *read_bytes, int max)
+>>>>>>> 7cfa73b (Stage 10)
 {
 
     int ip_val, i, j, bytes_to_read;
@@ -1295,4 +1299,8 @@ void machine_destroy()
 {
     memory_destroy();
     registers_destroy();
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 7cfa73b (Stage 10)

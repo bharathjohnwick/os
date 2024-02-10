@@ -121,7 +121,11 @@ xsm_word *machine_get_ipreg();
 xsm_word *machine_get_spreg();
 xsm_word *machine_get_register(const char *name);
 int machine_instr_req_privilege(int opcode);
+<<<<<<< HEAD
 int machine_serve_instruction(char *buffer, int *read_bytes, int max);
+=======
+int machine_serve_instruction(char *buffer, unsigned long *read_bytes, int max);
+>>>>>>> 7cfa73b (Stage 10)
 int machine_run();
 void machine_register_exception(char *message, int code);
 int machine_handle_exception();
@@ -167,4 +171,8 @@ int machine_get_mode();
 void machine_set_mode(int mode);
 void machine_destroy();
 
+<<<<<<< HEAD
 #endif
+=======
+#endif
+>>>>>>> 7cfa73b (Stage 10)

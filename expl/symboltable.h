@@ -12,7 +12,11 @@ struct Fieldlist
 	struct Typetable *type; //pointer to type table entry of the field's type
 	struct Fieldlist *next; //pointer to the next field
 };
+<<<<<<< HEAD
 extern struct Fieldlist *Fhead, *Ftail;
+=======
+struct Fieldlist *Fhead, *Ftail;
+>>>>>>> 7cfa73b (Stage 10)
 struct Fieldlist *FLookup(char *name, struct Fieldlist *list);
 void FInstall(struct Typetable *type, char *name);
 
@@ -23,7 +27,11 @@ struct Typetable
 	struct Fieldlist *fields; //pointer to the head of fields list
 	struct Typetable *next;   // pointer to the next type table entry
 };
+<<<<<<< HEAD
 extern struct Typetable *Thead, *Ttail;
+=======
+struct Typetable *Thead, *Ttail;
+>>>>>>> 7cfa73b (Stage 10)
 struct Typetable *TLookup(char *name);
 void TInstall(char *name, int size, struct Fieldlist *fields);
 
@@ -34,7 +42,11 @@ struct Paramstruct
 	struct Typetable *type;
 	struct Paramstruct *next;
 };
+<<<<<<< HEAD
 extern struct Paramstruct *Phead, *Ptail;// = NULL;
+=======
+struct Paramstruct *Phead = NULL, *Ptail = NULL;
+>>>>>>> 7cfa73b (Stage 10)
 void PInstall(char *name, struct Typetable *type);
 struct Paramstruct *PLookup(char *name);
 
@@ -53,8 +65,13 @@ struct Gsymbol *GLookup(char *name);														// Look up for a global identi
 void GInstall(char *name, struct Typetable *type, int size, struct Paramstruct *paramlist); // Installation
 struct Gsymbol *Ghead, *Gtail;
 
+<<<<<<< HEAD
 extern int totalCount;// = 4096;
 extern int fbind;// = 0;
+=======
+int totalCount = 4096;
+int fbind = 0;
+>>>>>>> 7cfa73b (Stage 10)
 
 struct Lsymbol
 {
@@ -67,4 +84,8 @@ struct Lsymbol
 };
 struct Lsymbol *Lhead, *Ltail;
 struct Lsymbol *LLookup(char *name);
+<<<<<<< HEAD
 void LInstall(char *name, struct Typetable *type);
+=======
+void LInstall(char *name, struct Typetable *type);
+>>>>>>> 7cfa73b (Stage 10)

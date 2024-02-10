@@ -5,7 +5,14 @@ ltranslate.lex.c
 y.tab.c
 y.tab.h
 *~
+<<<<<<< HEAD
 *.temp
 *.o
+=======
+*.xsm
+*.temp
+*.o
+expl_progs/
+>>>>>>> 7cfa73b (Stage 10)
 .DS_Store
 .vscode/*

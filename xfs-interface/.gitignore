@@ -4,6 +4,10 @@ disk.xfs
 *.dat
 *~
 *.o
+<<<<<<< HEAD
+=======
+*.xsm
+>>>>>>> 7cfa73b (Stage 10)
 *.txt
 *.tmp
 *.dSYM

@@ -28,6 +28,7 @@
     int declcount = 0, defcount = 0, exprcount = 0;
     int init_counter = 0, f_counter = 0;	//to check whether initialize is called or not.
     int wr = 0;
+<<<<<<< HEAD
 
 
     struct Fieldlist *Fhead, *Ftail;
@@ -37,6 +38,8 @@
     int totalCount = 4096;
     int fbind = 0;
 
+=======
+>>>>>>> 7cfa73b (Stage 10)
 %}
 
 %union
@@ -704,7 +707,11 @@ Expr : Expr PLUS Expr       {
         |ID '(' exprlist ')'{
         						type_assign_arr($1, $3, 1);
 
+<<<<<<< HEAD
                                 $3->ptr3 = (struct ASTNode*)Gtemp->paramlist;
+=======
+                                $3->ptr3 = Gtemp->paramlist;
+>>>>>>> 7cfa73b (Stage 10)
                                 Arg_callee = Gtemp->paramlist;
                                 while (Arg_callee != NULL)
                                 {
@@ -720,16 +727,28 @@ Expr : Expr PLUS Expr       {
                                 //differentiating b/w one and more than one arguments
                                 if (indicator == 1)
                                 {
+<<<<<<< HEAD
                                     $$ = TreeCreate($1->type, NODE_FUNC, $1->name, NULL, (struct ASTNode*)Gtemp->paramlist, NULL, $3, NULL);
+=======
+                                    $$ = TreeCreate($1->type, NODE_FUNC, $1->name, NULL, Gtemp->paramlist, NULL, $3, NULL);
+>>>>>>> 7cfa73b (Stage 10)
                                     indicator = 0;
                                 }
 
                                 else
+<<<<<<< HEAD
                                     $$ = TreeCreate($1->type, NODE_FUNC, $1->name, NULL, (struct ASTNode*)Gtemp->paramlist, NULL, NULL, $3);
                             }
         |ID '(' ')' 		{
     							type_assign_arr($1, NULL, 1);
                                 $$ = TreeCreate($1->type, NODE_FUNC, $1->name, NULL, (struct ASTNode*)Gtemp->paramlist, NULL, NULL, NULL);
+=======
+                                    $$ = TreeCreate($1->type, NODE_FUNC, $1->name, NULL, Gtemp->paramlist, NULL, NULL, $3);
+                            }
+        |ID '(' ')' 		{
+    							type_assign_arr($1, NULL, 1);
+                                $$ = TreeCreate($1->type, NODE_FUNC, $1->name, NULL, Gtemp->paramlist, NULL, NULL, NULL);
+>>>>>>> 7cfa73b (Stage 10)
                             }
 	    | ID DEQNILL 		{
 	   						    type_assign($1, NULL, 1, 0, 0, 0, 0);
@@ -740,11 +759,19 @@ Expr : Expr PLUS Expr       {
 	                        	$$ = TreeCreate(TLookup("boolean"), NODE_NEQ, NULL, NULL, NULL, $1, $2, NULL);
 	        				}
         | FIELD DEQNILL 	{
+<<<<<<< HEAD
 	                            type_comp((struct Typetable*)$1, NULL, '=');
 	                            $$ = TreeCreate(TLookup("boolean"), NODE_DEQ, NULL, NULL, NULL, $1, $2, NULL);
 	        				}
         | FIELD NEQNILL 	{
 	                            type_comp((struct Typetable*)$1, NULL, '^');
+=======
+	                            type_comp($1, NULL, '=');
+	                            $$ = TreeCreate(TLookup("boolean"), NODE_DEQ, NULL, NULL, NULL, $1, $2, NULL);
+	        				}
+        | FIELD NEQNILL 	{
+	                            type_comp($1, NULL, '^');
+>>>>>>> 7cfa73b (Stage 10)
 	                            $$ = TreeCreate(TLookup("boolean"), NODE_NEQ, NULL, NULL, NULL, $1, $2, NULL);
 	        				}
         ;
@@ -785,4 +812,8 @@ int main(int argc, char *argv[])
     }
     yyparse();
     return 0;
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 7cfa73b (Stage 10)
