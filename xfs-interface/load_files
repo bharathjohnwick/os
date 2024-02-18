@@ -4,4 +4,5 @@ load --int=timer ../spl/spl_progs/timer_handler.xsm
 load --int=10 ../spl/spl_progs/exithalt.xsm
 load --exhandler ../spl/spl_progs/exhalt.xsm
 load --int=7 ../spl/spl_progs/write_handler.xsm
-load --init ../expl/expl_progs/squares.xsm
+load --init ../expl/expl_progs/nums.xsm
+load --idle ../expl/expl_progs/idle.xsm
