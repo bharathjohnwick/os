@@ -1,0 +1,13 @@
+alias i R0;
+i = 1;
+while (i <= 20) do
+	breakpoint;
+	if (i % 2 == 0) then
+		print(i);
+		print(" is even");
+	else
+		print(i);
+		print(" is odd");
+	endif;
+	i = i + 1;
+endwhile;

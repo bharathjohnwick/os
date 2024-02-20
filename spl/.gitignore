@@ -13,7 +13,10 @@ y.tab.h
 *.temp
 *.o
 *xsm
+<<<<<<< HEAD
 spl_progs/
 >>>>>>> 7cfa73b (Stage 10)
+=======
+>>>>>>> 8784d67 (Stage 13)
 .DS_Store
 .vscode/

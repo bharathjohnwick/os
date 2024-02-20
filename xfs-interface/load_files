@@ -6,3 +6,4 @@ load --exhandler ../spl/spl_progs/exhalt.xsm
 load --int=7 ../spl/spl_progs/write_handler.xsm
 load --init ../expl/expl_progs/nums.xsm
 load --idle ../expl/expl_progs/idle.xsm
+load --module 7 ../spl/spl_progs/module_7.xsm
