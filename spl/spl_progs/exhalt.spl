@@ -1,0 +1,10 @@
+print "EX";
+print "EC";
+print EC;
+print "EIP";
+print EIP;
+print "EPN";
+print EPN;
+print "EMA";
+print EMA;
+halt;

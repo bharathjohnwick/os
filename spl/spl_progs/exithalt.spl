@@ -1,0 +1,4 @@
+print "EXIT";
+print "PID was";
+print [SYSTEM_STATUS_TABLE+1];
+halt;
