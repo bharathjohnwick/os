@@ -1,7 +1,21 @@
+
 [PROCESS_TABLE + ([SYSTEM_STATUS_TABLE+1])*16 + 13] = SP;
 SP = [PROCESS_TABLE + ([SYSTEM_STATUS_TABLE+1])*16 + 11] * 512 - 1;
 
 backup;
+
+multipush(R0, R1);
+alias func_num R1;
+alias cur_pid R2;
+alias msg R3;
+
+func_num = 3;
+cur_pid = [SYSTEM_STATUS_TABLE + 1];
+msg = "timer";
+
+call MOD_4;
+
+multipop(R0, R1);
 
 alias current_pid R0;
 alias ptab_addr R1;
@@ -9,39 +23,27 @@ alias ptab_addr R1;
 current_pid = [SYSTEM_STATUS_TABLE + 1];
 ptab_addr = PROCESS_TABLE + current_pid*16;
 
-[ptab_addr + 12] = SP % 512;		// KPTR
-[ptab_addr + 14] = PTBR;
-[ptab_addr + 15] = PTLR;
+// [ptab_addr + 12] = SP % 512;		// KPTR
+// [ptab_addr + 14] = PTBR;
+// [ptab_addr + 15] = PTLR;
 [ptab_addr + 4]  = READY;
 
-alias new_pid R2;
-if (current_pid < 3) then
-	new_pid = current_pid + 1;
-else
-	new_pid = 0;
-endif;
+alias cur R2;
+cur = 0;
+while (cur < MAX_PROC_NUM) do
+	if ([PROCESS_TABLE + current_pid*16 + 4] != TERMINATED) then
+		[PROCESS_TABLE + current_pid*16] = [PROCESS_TABLE + current_pid*16] + 1;
+	endif;
+	cur = cur + 1;
+endwhile;
 
-alias new_ptab_addr R3;
-new_ptab_addr = PROCESS_TABLE + 16*new_pid;
-SP = [new_ptab_addr + 11] * 512 + [new_ptab_addr + 12];
-PTBR = [new_ptab_addr + 14];
-PTLR = [new_ptab_addr + 15];
+// call scheduler module
+call MOD_5;
 
-[SYSTEM_STATUS_TABLE + 1] = new_pid;
-
-if ([new_ptab_addr+4] == CREATED) then
-	[new_ptab_addr+4] = RUNNING;
-	SP = [new_ptab_addr+13];
-	ireturn;
-endif;
-
-breakpoint;
-
-[new_ptab_addr+4] = RUNNING;
-SP = [new_ptab_addr+11]*512 + [new_ptab_addr+12];
 restore;
 
-breakpoint;
-
 SP = [([SYSTEM_STATUS_TABLE+1])*16 + PROCESS_TABLE +13];
+[[SYSTEM_STATUS_TABLE+1]*16 + PROCESS_TABLE + 9] = 0;
+
+
 ireturn;

@@ -1,0 +1,58 @@
+
+alias cur_pid R0;
+alias ptab R1;
+
+
+cur_pid = [SYSTEM_STATUS_TABLE + 1];
+ptab = PROCESS_TABLE + cur_pid * 16;
+
+multipush(BP);
+
+[ptab + 12] = SP%512;
+[ptab + 14] = PTBR;
+[ptab + 15] = PTLR;
+
+alias new_pid R2;
+new_pid = (cur_pid+1)%MAX_PROC_NUM;
+while (new_pid != cur_pid) do
+	if (new_pid != 0 && [PROCESS_TABLE + new_pid*16 + 4] == READY || 
+		[PROCESS_TABLE +new_pid*16 + 4] == CREATED) then
+		break;
+	endif;
+	if (new_pid == MAX_PROC_NUM - 1) then
+		if (cur_pid != 0) then
+			new_pid = 1;
+		else
+			new_pid = 0;
+			break;
+		endif;
+	else
+		new_pid = (new_pid+1);
+	endif;
+endwhile;
+if ([PROCESS_TABLE + new_pid*16 + 4] != READY && 
+	[PROCESS_TABLE + new_pid*16 +4] != CREATED) then
+	new_pid = 0;
+endif;
+
+alias new_ptab R3;
+new_ptab = PROCESS_TABLE + 16*new_pid;
+SP = [new_ptab + 11]*512 +
+	[new_ptab + 12];
+PTBR = [new_ptab + 14];
+PTLR = [new_ptab + 15];
+[SYSTEM_STATUS_TABLE + 1] = new_pid;
+
+if ([new_ptab+4] == CREATED) then
+	[new_ptab+4] = RUNNING;
+	[new_ptab+9] = 0;
+	SP = [new_ptab+13];
+
+	ireturn;
+endif;
+
+[new_ptab+4] = RUNNING;
+multipop(BP);
+
+return;
+

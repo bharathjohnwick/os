@@ -6,6 +6,18 @@ loadi(64, 14);
 loadi(65, 7);
 loadi(66, 8);
 
+// module 5
+loadi(50, 63);
+loadi(51, 64);
+
+// module 0
+loadi(40, 53);
+loadi(41, 54);
+
+// module 4
+loadi(48, 61);
+loadi(49, 62);
+
 // timer handler
 loadi(4, 17);
 loadi(5, 18);
@@ -22,7 +34,16 @@ loadi(3, 16);
 loadi(16, 29);
 loadi(17, 30);
 
+
 print "loaded handlers,lib";
+
+alias i R0;
+i = 0;
+while (i < MAX_PROC_NUM) do
+	[PROCESS_TABLE + 16*i + 4] = TERMINATED;
+	[PROCESS_TABLE + 16*i + 0] = 0;
+	i = i + 1;
+endwhile;
 
 // init proc
 [PROCESS_TABLE + 16 + 1] = 1;					// PID
@@ -128,6 +149,7 @@ PTLR=10;
 PTBR = PAGE_TABLE_BASE+20;
 PTLR=10;
 
+//stdlib
 [PTBR+0] = 63;
 [PTBR+1] = "0100";
 [PTBR+2] = 64;
@@ -138,6 +160,7 @@ PTLR=10;
 [PTBR+5] = "0110";
 [PTBR+6] = 79;
 [PTBR+7] = "0110";
+
 //code
 [PTBR+8] = 65;
 [PTBR+9] = "0100";
