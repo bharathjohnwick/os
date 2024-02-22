@@ -7,7 +7,7 @@ loadi(54, 67);
 loadi(55, 68);
 
 SP = 82*512 - 1;
-call BOOT_MODULE;
+call MOD_7;
 
 // Setup process table
 
@@ -58,5 +58,4 @@ print("page tables");
 PTBR = PAGE_TABLE_BASE;
 PTLR = 10;
 SP = 512*8;
-breakpoint;
 ireturn;

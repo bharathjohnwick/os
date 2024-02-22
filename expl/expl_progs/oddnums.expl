@@ -5,7 +5,7 @@ int temp;
 enddecl
 begin
 	i = 1;
-	while (i == i) do
+	while (i < 20) do
 		temp = exposcall("Write", -2, i);
 		i = i + 2;
 	endwhile;

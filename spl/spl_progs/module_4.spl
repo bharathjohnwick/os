@@ -1,0 +1,18 @@
+alias func_num R1;
+alias cur_pid R2;
+alias msg R3;
+
+if (func_num == 3) then
+	multipush(R1, R2, R3);
+	func_num = 8;
+	call MOD_0;
+	multipop(R1, R2, R3);
+	print(msg);
+
+	multipush(R1, R2, R3);
+	func_num = 9;
+	call MOD_0;
+	multipop(R1, R2, R3);
+
+	return;
+endif;
