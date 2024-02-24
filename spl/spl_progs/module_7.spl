@@ -70,7 +70,7 @@ endwhile;
 [PROCESS_TABLE + 48 + 12] = 0;		// KPTR
 [PROCESS_TABLE + 48 + 14] = PAGE_TABLE_BASE+60;	// PTBR
 [PROCESS_TABLE + 48 + 15] = 10;				// PTLR
-[PROCESS_TABLE + 48 + 4] = CREATED;
+[PROCESS_TABLE + 48 + 4] = TERMINATED;
 
 // Pagetab for user proc 1
 
