@@ -36,16 +36,7 @@ else
 	offset = (userSP-3)%512;
 	physicalPageNum = [PTBR + logicalPageNum*2];
 	arg2 = [physicalPageNum * 512 + offset];
-
-	multipush(R0, R1, R2, R3, R4, R5, R6, R7);
-
-	R1 = 3;
-	R2 = [SYSTEM_STATUS_TABLE + 1];
-	R3 = arg2;
-	call MOD_4;
-
-	multipop(R0, R1, R2, R3, R4, R5, R6, R7);
-
+	print arg2;
 	returnVal = 0;
 endif;
 

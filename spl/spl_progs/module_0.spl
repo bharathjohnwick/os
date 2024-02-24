@@ -3,8 +3,6 @@ alias cur_pid R2;
 
 if (func_num == 8) then
 	while ([TERMINAL_STATUS_TABLE] == 1) do
-		print("Didn't get the lock: ");
-		print(cur_pid);
 		[PROCESS_TABLE + cur_pid*16 + 4] = WAIT_TERMINAL;
 		multipush(R1, R2);
 		call MOD_5;
@@ -17,27 +15,23 @@ if (func_num == 8) then
 endif;
 if (func_num == 9) then
 	if ([TERMINAL_STATUS_TABLE + 1] != cur_pid) then
-		print("ERROR");
-		print("INVALID PID IN MOD_0 RELEASE LOCK");
 		R0 = -1;
 		return;
 	endif;
-
+	[TERMINAL_STATUS_TABLE] = 0;
 
 	alias i R3;
-	i = 0;
-	[TERMINAL_STATUS_TABLE] = 0;
+
 	while (i < MAX_PROC_NUM) do
 		if ([PROCESS_TABLE + 16*i + 4] == WAIT_TERMINAL) then
 			[PROCESS_TABLE + 16*i + 4] = READY;
 		endif;
-		i = i + 1;
 	endwhile;
-
 
 	R0 = 0;
 	return;
 endif;
 
+breakpoint;
 R0 = 1;
 return;
