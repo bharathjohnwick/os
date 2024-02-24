@@ -34,6 +34,7 @@ loadi(3, 16);
 loadi(16, 29);
 loadi(17, 30);
 
+[TERMINAL_STATUS_TABLE] = 0;
 
 print "loaded handlers,lib";
 
