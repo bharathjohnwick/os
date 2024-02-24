@@ -1,3 +1,4 @@
+
 alias cur_pid R0;
 alias ptab R1;
 
@@ -30,7 +31,7 @@ while (new_pid != cur_pid) do
 	endif;
 endwhile;
 if ([PROCESS_TABLE + new_pid*16 + 4] != READY && 
-	[PROCESS_TABLE + new_pid*16 + 4] != CREATED) then
+	[PROCESS_TABLE + new_pid*16 +4] != CREATED) then
 	new_pid = 0;
 endif;
 
@@ -46,6 +47,7 @@ if ([new_ptab+4] == CREATED) then
 	[new_ptab+4] = RUNNING;
 	[new_ptab+9] = 0;
 	SP = [new_ptab+13];
+
 	ireturn;
 endif;
 

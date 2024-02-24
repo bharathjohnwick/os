@@ -7,13 +7,12 @@ if (func_num == 3) then
 	func_num = 8;
 	call MOD_0;
 	multipop(R1, R2, R3);
-
 	print(msg);
 
 	multipush(R1, R2, R3);
 	func_num = 9;
 	call MOD_0;
 	multipop(R1, R2, R3);
-endif;
 
-return;
+	return;
+endif;
