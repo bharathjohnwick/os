@@ -1,0 +1,39 @@
+// Set MODE FLAG
+[PROCESS_TABLE + [SYSTEM_STATUS_TABLE + 1] * 16 + 9] = 5;
+alias userSP R0;
+userSP = SP;
+// Switch to Kernel Stack
+SP = [PROCESS_TABLE + ([SYSTEM_STATUS_TABLE + 1] * 16) + 11] * 512 - 1;
+// Address Translation for File Descriptor
+alias physicalPageNum R1;
+alias offset R2;
+alias fileDescPhysicalAddr R3;
+physicalPageNum = [PTBR + 2 * ((userSP - 4)/ 512)];
+offset = (userSP - 4) % 512;
+fileDescPhysicalAddr = (physicalPageNum * 512) + offset;
+alias fileDescriptor R4;
+fileDescriptor=[fileDescPhysicalAddr];
+// Check File Descriptor
+if (fileDescriptor != -2) then
+    // Invalid File Descriptor
+    alias physicalAddrRetVal R5;
+    physicalAddrRetVal = ([PTBR + 2 * ((userSP - 1) / 512)] * 512) + ((userSP - 1) % 512);
+    [physicalAddrRetVal] = -1;
+else
+    // Valid File Descriptor
+    // Address Translation for Word
+    alias word R5;
+    word = [[PTBR + 2 * ((userSP - 3) / 512)] * 512 + ((userSP - 3) % 512)];
+    // Print Word
+    print word;
+    // Set Return Value
+    alias physicalAddrRetVal R6;
+    physicalAddrRetVal = ([PTBR + 2 * (userSP - 1)/ 512] * 512) + ((userSP - 1) % 512);
+    [physicalAddrRetVal] = 0;
+endif;
+// Restore User Stack
+SP = userSP;
+// Reset MODE FLAG
+[PROCESS_TABLE + [SYSTEM_STATUS_TABLE + 1] * 16 + 9] = 0;
+// Return to User Mode
+ireturn;
