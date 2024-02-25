@@ -22,6 +22,10 @@ loadi(49, 62);
 loadi(4, 17);
 loadi(5, 18);
 
+// console handler
+loadi(8, 21);
+loadi(9, 22);
+
 // exit handler
 loadi(22, 35);
 loadi(23, 36);
@@ -33,6 +37,11 @@ loadi(3, 16);
 // int7
 loadi(16, 29);
 loadi(17, 30);
+
+// int6
+loadi(14, 27);
+loadi(15, 28);
+
 
 
 print "loaded handlers,lib";

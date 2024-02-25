@@ -1,0 +1,24 @@
+[PROCESS_TABLE + ([SYSTEM_STATUS_TABLE+1])*16 + 13] = SP;
+SP = [PROCESS_TABLE + ([SYSTEM_STATUS_TABLE+1])*16 + 11] * 512 - 1;
+
+backup;
+
+alias req_pid R0;
+alias ptab_addr R1;
+
+req_pid = [TERMINAL_STATUS_TABLE+1];
+ptab_addr = req_pid*16 + PROCESS_TABLE;
+
+[ptab_addr + 8] = P0;
+
+multipush(R0, R1);
+R1 = 9;
+R2 = req_pid;
+call MOD_0;
+multipop(R0, R1);
+
+restore;
+
+SP = [([SYSTEM_STATUS_TABLE+1])*16 + PROCESS_TABLE +13];
+[[SYSTEM_STATUS_TABLE+1]*16 + PROCESS_TABLE + 9] = 0;
+ireturn;
