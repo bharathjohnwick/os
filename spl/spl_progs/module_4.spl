@@ -37,7 +37,6 @@ if (func_num == TERMINAL_READ) then
 	call MOD_5;
 	multipop(R0, R1, R2, R3);
 
-	breakpoint;
 	ptb = [PROCESS_TABLE + 16*cur_pid + 14];
 	result_addr = [ptb + 2*(result_addr)/512]*512 + (result_addr)%512;
 	[result_addr] = [PROCESS_TABLE + cur_pid*16 + 8];

@@ -1,0 +1,57 @@
+alias func_num R1;
+alias cur_pid R2;
+
+if (func_num == FREE_USER_AREA_PAGE) then
+	alias uap R3;
+
+	uap = [PROCESS_TABLE + 16*cur_pid + 11];
+
+	multipush(R0, R1, R2, R3);
+	R1 = RELEASE_PAGE;
+	R2 = uap;
+	call MOD_2;
+	multipop(R0, R1, R2, R3);
+	return;
+endif;
+if (func_num == EXIT_PROCESS) then
+	multipush(R2);
+	func_num = FREE_PAGE_TABLE;
+	call MOD_1;
+	multipop(R2);
+
+	multipush(R2);
+	func_num = FREE_USER_AREA_PAGE;
+	call MOD_1;
+	multipop(R2);
+
+	[PROCESS_TABLE + 16*cur_pid + 4] = TERMINATED;
+	return;
+endif;
+if (func_num == FREE_PAGE_TABLE) then
+	alias i R2;
+	alias ptb R3;
+	ptb = [PROCESS_TABLE + 16*cur_pid + 14];
+
+	[ptb] = -1;
+	[ptb+1] = "0000";
+	[ptb+2] = -1;
+	[ptb+3] = "0000";
+
+	i = 2;
+	while (i < 10) do
+		if ([ptb + 2*i] != -1) then
+			multipush(R0, R1, R2, R3);
+			R1 = RELEASE_PAGE;
+			R2 = [ptb + 2*i];
+			multipop(R0, R1, R2, R3);
+		endif;
+		[ptb + 2*i] = -1;
+		[ptb + 2*i + 1] = "0000";
+		i = i + 1;
+	endwhile;
+	return;
+endif;
+
+R0 = 1;
+breakpoint;
+return;
