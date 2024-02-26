@@ -1,0 +1,158 @@
+[PROCESS_TABLE + ([SYSTEM_STATUS_TABLE+1] * 16) + 9] = 9;
+
+alias userSP R0;
+userSP = SP;
+
+[PROCESS_TABLE + ( [SYSTEM_STATUS_TABLE + 1] * 16 ) + 13] = SP;
+SP = [PROCESS_TABLE + [SYSTEM_STATUS_TABLE + 1] * 16 + 11] * 512 - 1;
+
+// syscallno, arg1, arg2, arg3, return val, IP
+
+alias physicalPageNum R1;
+alias offset R2;
+alias fname R3;
+alias returnLocation R4;
+alias returnVal R5;
+alias arg2 R6;
+alias i R7;
+alias uap R8;
+alias pid R9;
+alias ptb R10;
+alias free_page R11;
+
+pid = [SYSTEM_STATUS_TABLE + 1];
+
+// return
+offset = (userSP-1)%512;
+physicalPageNum = [PTBR + 2*((userSP-1)/512)];
+returnLocation = 512 * physicalPageNum + offset;
+
+// arg1
+offset = (userSP- 4)%512;
+physicalPageNum = [PTBR + ((userSP-4)/512)*2];
+fname = [physicalPageNum * 512 + offset];
+
+i = 0;
+while (i < MAX_FILE_NUM) do
+	if (fname == [INODE_TABLE + 16*i + 1] && [INODE_TABLE + 16*i] == EXEC) then
+		break;
+	endif;
+	i = i + 1;
+endwhile;
+if (i == MAX_FILE_NUM) then
+	print("no such file");
+	goto _exit;
+endif;
+
+uap = [PROCESS_TABLE + pid*16 + 11];
+
+multipush(R0, R1, R2, R3, R4, R5, R6, R7, R8, R9, R10);
+
+R1 = EXIT_PROCESS;
+R2 = pid;
+call MOD_1;
+
+multipop(R0, R1, R2, R3, R4, R5, R6, R7, R8, R9, R10);
+
+[MEMORY_FREE_LIST+uap] = 1;
+[SYSTEM_STATUS_TABLE + 2] = [SYSTEM_STATUS_TABLE + 2] - 1;
+
+SP = 512 * uap - 1;
+
+[PROCESS_TABLE + 16*pid + 4] = RUNNING;
+[PROCESS_TABLE + 16*pid + 7] = i;
+
+ptb = [PROCESS_TABLE + 16*pid + 14];
+
+[ptb + 0] = 63;
+[ptb + 1] = "0100";
+[ptb + 2] = 64;
+[ptb + 3] = "0100";
+
+breakpoint;
+
+alias j R15;
+alias stack_page R1;
+alias code_page R2;
+
+j = 0;
+while (j < 2) do
+	multipush(R0, R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R15);
+	
+	R1 = GET_FREE_PAGE;
+	R2 = pid;
+	call MOD_2;
+	free_page = R0;
+	
+	multipop(R0, R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R15);
+
+	if (j == 0) then	
+		stack_page = free_page;
+	endif;
+	[ptb + 16 + 2*j] = free_page;
+	[ptb + 16 + 2*j + 1] = "0110";
+	
+	j = j + 1;
+endwhile;
+
+breakpoint;
+
+j = 0;
+while (j < 2) do
+	multipush(R0, R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R15);
+	
+	R1 = GET_FREE_PAGE;
+	R2 = pid;
+	call MOD_2;
+	free_page = R0;
+	
+	multipop(R0, R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R15);
+
+	[ptb + 4 + 2*j] = free_page;
+	[ptb + 4 + 2*j + 1] = "0110";
+	
+	j = j + 1;
+endwhile;
+
+breakpoint;
+
+j = 0;
+while (j < 4) do
+	if ([INODE_TABLE + 16*i + 8 + j] == -1) then
+		[ptb + 8 + 2*j] = "-1";
+		[ptb + 8 + 2*j + 1] = "0000";
+		j = j + 1;
+		continue;
+	endif;
+
+	multipush(R0, R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R15);
+	
+	R1 = GET_FREE_PAGE;
+	R2 = pid;
+	call MOD_2;
+	free_page = R0;
+	
+	multipop(R0, R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R15);
+
+	if (j == 0) then
+		code_page = free_page;
+	endif;
+	
+	[ptb + 8 + 2*j] = free_page;
+	[ptb + 8 + 2*j + 1] = "0100";
+
+	loadi(free_page, [INODE_TABLE + 16*i + 8 + j]);
+	j = j + 1;
+endwhile;
+
+breakpoint;
+
+[stack_page * 512] = [512*code_page + 1];
+
+[PROCESS_TABLE + 16*pid + 13] = 8*512;
+
+_exit:
+[returnLocation] = returnVal;
+[PROCESS_TABLE + ([SYSTEM_STATUS_TABLE+1]*16) + 9] = 0;
+SP = [PROCESS_TABLE + ([SYSTEM_STATUS_TABLE + 1] * 16) + 13];
+ireturn;

@@ -18,6 +18,14 @@ loadi(41, 54);
 loadi(48, 61);
 loadi(49, 62);
 
+// module 1
+loadi(42, 55);
+loadi(43, 56);
+
+// module 2
+loadi(44, 57);
+loadi(45, 58);
+
 // timer handler
 loadi(4, 17);
 loadi(5, 18);
@@ -42,7 +50,13 @@ loadi(17, 30);
 loadi(14, 27);
 loadi(15, 28);
 
+// int9
+loadi(20, 33);
+loadi(21, 34);
 
+// inode+user table
+loadi(59, 3);
+loadi(60, 4);
 
 print "loaded handlers,lib";
 
@@ -70,7 +84,7 @@ endwhile;
 [PROCESS_TABLE + 32 + 12] = 0;		// KPTR
 [PROCESS_TABLE + 32 + 14] = PAGE_TABLE_BASE+40;	// PTBR
 [PROCESS_TABLE + 32 + 15] = 10;				// PTLR
-[PROCESS_TABLE + 32 + 4] = CREATED;
+[PROCESS_TABLE + 32 + 4] = TERMINATED;
 
 // user proc 2
 [PROCESS_TABLE + 48 + 1] = 3;		// PID
@@ -189,5 +203,17 @@ PTLR=10;
 // start address
 [76*512] = [65*512 + 1];
 // user area stacK: pg 89
+
+[SYSTEM_STATUS_TABLE + 3] = 0;
+i = 0;
+[SYSTEM_STATUS_TABLE + 2] = 128-76;
+while (i < 76) do
+	[MEMORY_FREE_LIST+i] = 1;
+	i = i + 1;
+endwhile;
+while (i < 128) do
+	[MEMORY_FREE_LIST+i] = 0;
+	i = i + 1;
+endwhile;
 
 return;
