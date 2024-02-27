@@ -1,7 +1,7 @@
 alias func_num R1;
 alias cur_pid R2;
 
-if (func_num == 8) then
+if (func_num == ACQUIRE_TERMINAL) then
 	while ([TERMINAL_STATUS_TABLE] == 1) do
 		[PROCESS_TABLE + cur_pid*16 + 4] = WAIT_TERMINAL;
 		multipush(R0, R1, R2);
@@ -13,7 +13,7 @@ if (func_num == 8) then
 	[TERMINAL_STATUS_TABLE + 1] = cur_pid;
 	return;
 endif;
-if (func_num == 9) then
+if (func_num == RELEASE_TERMINAL) then
 	if ([TERMINAL_STATUS_TABLE + 1] != cur_pid) then
 		R0 = -1;
 		return;
@@ -32,7 +32,17 @@ if (func_num == 9) then
 	R0 = 0;
 	return;
 endif;
+if (func_num == ACQUIRE_DISK) then
+	while ([DISK_STATUS_TABLE] == 1) do
+		[PROCESS_TABLE + cur_pid*16 + 4] = WAIT_DISK;
+		multipush(R0, R1, R2);
+		call MOD_5;
+		multipop(R0, R1, R2);
+	endwhile;
 
+	[DISK_STATUS_TABLE] = 1;
+	[DISK_STATUS_TABLE + 4] = cur_pid;
+endif;
 breakpoint;
 R0 = 1;
 return;
