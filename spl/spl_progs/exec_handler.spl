@@ -57,6 +57,17 @@ multipop(R0, R1, R2, R3, R4, R5, R6, R7, R8, R9, R10);
 [MEMORY_FREE_LIST+uap] = 1;
 [SYSTEM_STATUS_TABLE + 2] = [SYSTEM_STATUS_TABLE + 2] - 1;
 
+alias idx R1;
+alias base R2;
+base = (uap+1)*512 - 16;
+idx = 0;
+while (idx < 8) do
+	[base + 2*idx] = -1;
+	idx = idx + 1;
+endwhile;
+
+
+
 SP = 512 * uap - 1;
 
 [PROCESS_TABLE + 16*pid + 4] = RUNNING;
@@ -68,8 +79,6 @@ ptb = [PROCESS_TABLE + 16*pid + 14];
 [ptb + 1] = "0100";
 [ptb + 2] = 64;
 [ptb + 3] = "0100";
-
-breakpoint;
 
 alias j R15;
 alias stack_page R1;
@@ -95,8 +104,6 @@ while (j < 2) do
 	j = j + 1;
 endwhile;
 
-breakpoint;
-
 j = 0;
 while (j < 2) do
 	multipush(R0, R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R15);
@@ -113,8 +120,6 @@ while (j < 2) do
 	
 	j = j + 1;
 endwhile;
-
-breakpoint;
 
 j = 0;
 while (j < 4) do
@@ -141,11 +146,20 @@ while (j < 4) do
 	[ptb + 8 + 2*j] = free_page;
 	[ptb + 8 + 2*j + 1] = "0100";
 
-	loadi(free_page, [INODE_TABLE + 16*i + 8 + j]);
+	multipush(R0, R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R15);
+
+	R1 = DISK_LOAD;
+	R2 = pid;
+	R3 = free_page;
+	R4 = [INODE_TABLE + 16*i + 8 + j];
+	call MOD_4;
+
+	multipop(R0, R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R15);
+
+	breakpoint;
+
 	j = j + 1;
 endwhile;
-
-breakpoint;
 
 [stack_page * 512] = [512*code_page + 1];
 

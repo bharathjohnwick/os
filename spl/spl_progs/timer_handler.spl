@@ -31,8 +31,8 @@ ptab_addr = PROCESS_TABLE + current_pid*16;
 alias cur R2;
 cur = 0;
 while (cur < MAX_PROC_NUM) do
-	if ([PROCESS_TABLE + current_pid*16 + 4] != TERMINATED) then
-		[PROCESS_TABLE + current_pid*16] = [PROCESS_TABLE + current_pid*16] + 1;
+	if ([PROCESS_TABLE + cur*16 + 4] != TERMINATED) then
+		[PROCESS_TABLE + cur*16] = [PROCESS_TABLE + cur*16] + 1;
 	endif;
 	cur = cur + 1;
 endwhile;
