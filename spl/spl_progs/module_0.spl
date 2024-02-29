@@ -42,6 +42,8 @@ if (func_num == ACQUIRE_DISK) then
 
 	[DISK_STATUS_TABLE] = 1;
 	[DISK_STATUS_TABLE + 4] = cur_pid;
+
+	return;
 endif;
 breakpoint;
 R0 = 1;
