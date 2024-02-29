@@ -62,6 +62,9 @@ loadi(21, 34);
 loadi(59, 3);
 loadi(60, 4);
 
+// disk free list
+loadi(61, 2);
+
 print "loaded handlers,lib";
 
 alias i R0;
@@ -120,6 +123,18 @@ base = 81*512 - 16;
 i = 0;
 while (i < 8) do
 	[base + 2*i] = -1;
+	i = i + 1;
+endwhile;
+
+// disk map table
+alias j R1;
+i = 0;
+while (i < MAX_PROC_NUM) do
+	j = 0;
+	while (j < 10) do
+		[DISK_MAP_TABLE + 10*i + j] = -1;
+		j = j + 1;
+	endwhile;
 	i = i + 1;
 endwhile;
 

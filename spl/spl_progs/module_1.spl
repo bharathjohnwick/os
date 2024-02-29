@@ -28,8 +28,8 @@ if (func_num == EXIT_PROCESS) then
 	return;
 endif;
 if (func_num == FREE_PAGE_TABLE) then
-	alias i R2;
-	alias ptb R3;
+	alias i R9;
+	alias ptb R10;
 	ptb = [PROCESS_TABLE + 16*cur_pid + 14];
 
 	[ptb] = -1;
@@ -37,14 +37,49 @@ if (func_num == FREE_PAGE_TABLE) then
 	[ptb+2] = -1;
 	[ptb+3] = "0000";
 
+	alias dmt R11;
+	dmt = DISK_MAP_TABLE + 10*cur_pid;
+	R7 = cur_pid;
+	if ([dmt + 2] != -1) then
+		multipush(R2, R3, R9, R10, R11);
+		R1 = RELEASE_BLOCK;
+		R2 = [dmt + 2];
+		R3 = R7;
+		multipop(R2, R3, R9, R10, R11);
+	endif;
+
+	if ([dmt + 3] != -1) then
+		multipush(R2, R3, R9, R10, R11);
+		R1 = RELEASE_BLOCK;
+		R2 = [dmt + 3];
+		R3 = R7;
+		multipop(R2, R3, R9, R10, R11);
+	endif;
+
+	if ([dmt + 8] != -1) then
+		multipush(R2, R3, R9, R10, R11);
+		R1 = RELEASE_BLOCK;
+		R2 = [dmt + 8];
+		R3 = R7;
+		multipop(R2, R3, R9, R10, R11);
+	endif;
+	if ([dmt + 9] != -1) then
+		multipush(R2, R3, R9, R10, R11);
+		R1 = RELEASE_BLOCK;
+		R2 = [dmt + 9];
+		R3 = R7;
+		multipop(R2, R3, R9, R10, R11);
+	endif;
+
 	i = 2;
 	while (i < 10) do
 		if ([ptb + 2*i] != -1) then
-			multipush(R0, R1, R2, R3);
+			multipush(R2, R3, R9, R10, R11);
 			R1 = RELEASE_PAGE;
 			R2 = [ptb + 2*i];
-			multipop(R0, R1, R2, R3);
+			multipop(R2, R3, R9, R10, R11);
 		endif;
+		[dmt + i] = -1;
 		[ptb + 2*i] = -1;
 		[ptb + 2*i + 1] = "0000";
 		i = i + 1;
@@ -52,6 +87,6 @@ if (func_num == FREE_PAGE_TABLE) then
 	return;
 endif;
 
-R0 = 1;
 breakpoint;
+R0 = 1;
 return;

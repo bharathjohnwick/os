@@ -13,8 +13,13 @@ multipush(BP);
 [ptab + 15] = PTLR;
 
 alias new_pid R2;
+alias alive R3;
+alive = 0;
 new_pid = (cur_pid+1)%MAX_PROC_NUM;
 while (new_pid != cur_pid) do
+	if ([PROCESS_TABLE + new_pid*16 + 4] != TERMINATED) then
+		alive = alive + 1;
+	endif;
 	if (new_pid != 0 && [PROCESS_TABLE + new_pid*16 + 4] == READY || 
 		[PROCESS_TABLE +new_pid*16 + 4] == CREATED) then
 		break;
@@ -30,6 +35,9 @@ while (new_pid != cur_pid) do
 		new_pid = (new_pid+1);
 	endif;
 endwhile;
+if (alive == 1) then
+	print("Done");
+endif;
 if ([PROCESS_TABLE + new_pid*16 + 4] != READY && 
 	[PROCESS_TABLE + new_pid*16 + 4] != CREATED) then
 	new_pid = 0;

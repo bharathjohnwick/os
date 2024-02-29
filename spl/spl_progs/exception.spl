@@ -1,10 +1,99 @@
-print "EX";
-print "EC";
-print EC;
-print "EIP";
-print EIP;
-print "EPN";
-print EPN;
-print "EMA";
-print EMA;
-halt;
+
+[PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE+1] + 9] = -1;
+[PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE+1] + 13] = SP;
+SP = [PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE+1] + 11]*512-1;
+
+backup;
+multipush(EIP);
+
+if (EC != 0) then
+	print("Exception");
+	if (EC == 1) then
+		print("Instruction");
+	endif;
+	if (EC == 2) then
+		print("Mem access");
+	endif;
+	if (EC == 3) then
+		print("Arithmetic");
+	endif;
+
+	R1 = EXIT_PROCESS;
+	R2 = [SYSTEM_STATUS_TABLE+1];
+	call MOD_1;
+
+	call MOD_5;
+endif;
+
+if ([PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE+1] + 12] == 512*8 - 1) then
+	print("Exception");
+	print("Stack");
+
+	R1 = EXIT_PROCESS;
+	R2 = [SYSTEM_STATUS_TABLE+1];
+	call MOD_1;
+
+	call MOD_5;
+endif;
+
+if (EPN >= 4 && EPN <= 7) then
+	alias pid R8;
+	alias blk_no R9;
+
+	pid = [SYSTEM_STATUS_TABLE + 1];
+	blk_no = [DISK_MAP_TABLE + 10*pid + EPN];
+
+	multipush(R8, R9);
+	R1 = GET_CODE_PAGE;
+	R2 = blk_no;
+	call MOD_2;
+	multipop(R8, R9);
+
+	alias ptbr R10;
+	ptbr = PAGE_TABLE_BASE + 20*pid;
+	[ptbr + 2*EPN] = R0;
+	[ptbr + 2*EPN + 1] = "1100";
+
+endif;
+if (EPN >= 2 && EPN < 4) then
+	alias pid R8;
+	alias ptbr R9;
+
+	pid = [SYSTEM_STATUS_TABLE + 1];
+	ptbr = PAGE_TABLE_BASE + 20*pid;
+
+	multipush(R8, R9);
+	R1 = GET_FREE_PAGE;
+	call MOD_2;
+	multipop(R8, R9);
+	[ptbr + 4] = R0;
+	[ptbr + 5] = "1110";
+
+	multipush(R8, R9);
+	R1 = GET_FREE_PAGE;
+	call MOD_2;
+	multipop(R8, R9);
+	[ptbr + 6] = R0;
+	[ptbr + 7] = "1110";
+endif;
+
+[PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE+1] + 9] = 0;
+
+multipop(EIP);
+
+alias user_sp R8 ;
+alias pid    R9   ;
+alias  ptbr  R10  ;
+alias  log   R11  ;
+alias  phy    R12 ;
+pid = [SYSTEM_STATUS_TABLE + 1];
+user_sp = [PROCESS_TABLE + 16*pid + 13] + 1;
+ptbr = PAGE_TABLE_BASE + 20*pid;
+
+phy = [ptbr + 2*(user_sp/512)];
+[phy*512 + (user_sp)%512] = EIP;
+
+restore;
+
+SP = [PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE+1] + 13] + 1;
+ireturn;

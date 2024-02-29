@@ -44,6 +44,7 @@ if (i == MAX_FILE_NUM) then
 	goto _exit;
 endif;
 
+
 uap = [PROCESS_TABLE + pid*16 + 11];
 
 multipush(R0, R1, R2, R3, R4, R5, R6, R7, R8, R9, R10);
@@ -53,6 +54,7 @@ R2 = pid;
 call MOD_1;
 
 multipop(R0, R1, R2, R3, R4, R5, R6, R7, R8, R9, R10);
+
 
 [MEMORY_FREE_LIST+uap] = 1;
 [SYSTEM_STATUS_TABLE + 2] = [SYSTEM_STATUS_TABLE + 2] - 1;
@@ -65,7 +67,6 @@ while (idx < 8) do
 	[base + 2*idx] = -1;
 	idx = idx + 1;
 endwhile;
-
 
 
 SP = 512 * uap - 1;
@@ -84,86 +85,70 @@ alias j R15;
 alias stack_page R1;
 alias code_page R2;
 
-j = 0;
-while (j < 2) do
-	multipush(R0, R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R15);
-	
-	R1 = GET_FREE_PAGE;
-	R2 = pid;
-	call MOD_2;
-	free_page = R0;
-	
-	multipop(R0, R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R15);
+// Allocate stack pages
 
-	if (j == 0) then	
-		stack_page = free_page;
-	endif;
-	[ptb + 16 + 2*j] = free_page;
-	[ptb + 16 + 2*j + 1] = "0110";
-	
-	j = j + 1;
-endwhile;
+multipush(R0, R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R15);
+R1 = GET_FREE_PAGE;
+R2 = pid;
+call MOD_2;
+free_page = R0;
+multipop(R0, R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R15);
 
-j = 0;
-while (j < 2) do
-	multipush(R0, R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R15);
-	
-	R1 = GET_FREE_PAGE;
-	R2 = pid;
-	call MOD_2;
-	free_page = R0;
-	
-	multipop(R0, R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R15);
+stack_page = free_page;
+[ptb + 16] = free_page;
+[ptb + 17] = "0110";
 
-	[ptb + 4 + 2*j] = free_page;
-	[ptb + 4 + 2*j + 1] = "0110";
-	
-	j = j + 1;
-endwhile;
+multipush(R0, R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R15);
+R1 = GET_FREE_PAGE;
+R2 = pid;
+call MOD_2;
+free_page = R0;
+multipop(R0, R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R15);
 
-j = 0;
-while (j < 4) do
-	if ([INODE_TABLE + 16*i + 8 + j] == -1) then
-		[ptb + 8 + 2*j] = "-1";
-		[ptb + 8 + 2*j + 1] = "0000";
-		j = j + 1;
-		continue;
-	endif;
+[ptb + 18] = free_page;
+[ptb + 19] = "0110";
 
-	multipush(R0, R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R15);
-	
-	R1 = GET_FREE_PAGE;
-	R2 = pid;
-	call MOD_2;
-	free_page = R0;
-	
-	multipop(R0, R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R15);
+// Invalidate heap pages
+[ptb + 4] = -1;
+[ptb + 5] = "0000";
+[ptb + 6] = -1;
+[ptb + 7] = "0000";
 
-	if (j == 0) then
-		code_page = free_page;
-	endif;
-	
-	[ptb + 8 + 2*j] = free_page;
-	[ptb + 8 + 2*j + 1] = "0100";
+// Allocate code page, and invalidate other code pages
+multipush(R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R15);
+R1 = GET_CODE_PAGE;
+R2 = [INODE_TABLE + 16*i + 8];
+R3 = pid;
+call MOD_2;
+multipop(R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R15);
+[ptb + 8] = R0;
+[ptb + 9] = "0100";
+[ptb + 10] = -1;
+[ptb + 11] = "0000";
+[ptb + 12] = -1;
+[ptb + 13] = "0000";
+[ptb + 14] = -1;
+[ptb + 15] = "0000";
 
-	multipush(R0, R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R15);
-
-	R1 = DISK_LOAD;
-	R2 = pid;
-	R3 = free_page;
-	R4 = [INODE_TABLE + 16*i + 8 + j];
-	call MOD_4;
-
-	multipop(R0, R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R15);
-
-	breakpoint;
-
-	j = j + 1;
-endwhile;
-
-[stack_page * 512] = [512*code_page + 1];
-
+[stack_page * 512] = [512*R0 + 1];
 [PROCESS_TABLE + 16*pid + 13] = 8*512;
+
+alias dmt R2;
+dmt = DISK_MAP_TABLE + 10*pid;
+[dmt + 2] = -1;
+[dmt + 3] = -1;
+[dmt + 4] = -2;
+[dmt + 5] = [INODE_TABLE + 16*i + 8];
+[dmt + 6] = [INODE_TABLE + 16*i + 9];
+[dmt + 7] = [INODE_TABLE + 16*i + 10];
+[dmt + 8] = [INODE_TABLE + 16*i + 11];
+[dmt + 9] = -1;
+[dmt + 10] = -1;
+
+[PROCESS_TABLE + ([SYSTEM_STATUS_TABLE+1]*16) + 9] = 0;
+SP = 512*8;
+
+ireturn;
 
 _exit:
 [returnLocation] = returnVal;

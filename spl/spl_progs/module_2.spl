@@ -40,3 +40,58 @@ if (func_num == RELEASE_PAGE) then
 	R0 = 0;
 	return;
 endif;
+if (func_num == GET_CODE_PAGE) then
+	alias blk_no R10;
+	alias pid R11;
+
+	blk_no = R2;
+	pid = R3;
+
+	alias i R1;
+	alias j R2;
+	i = 0;
+	while (i < MAX_PROC_NUM) do
+		j = 2;
+		while (j < 10) do
+			if ([DISK_MAP_TABLE + 10*i + j] != -1) then
+				alias pg R3;
+				pg = [PAGE_TABLE_BASE + 20*i + 2*j];
+				if (pg != -1) then
+					[MEMORY_FREE_LIST + pg] = [MEMORY_FREE_LIST + pg] + 1;
+					R0 = pg;
+					return;
+				endif;
+			endif;
+			j = j + 1;
+		endwhile;
+		i = i + 1;
+	endwhile;
+
+	multipush(R10, R11);
+	R1 = GET_FREE_PAGE;
+	call MOD_2;
+	multipop(R10, R11);
+
+	multipush(R0, R10, R11);
+	R1 = DISK_LOAD;
+	R2 = pid;
+	R3 = R0;
+	R4 = blk_no;
+	call MOD_4;
+	multipop(R0, R10, R11);
+
+	return;
+endif;
+if (func_num == RELEASE_BLOCK) then
+	alias blk_no R8;
+	alias pid R9;
+	blk_no = R2;
+	pid = R3;
+
+	[DISK_FREE_LIST + blk_no] = [DISK_FREE_LIST + blk_no] + 1;
+	return;
+endif;
+
+breakpoint;
+R0 = 1;
+return;
