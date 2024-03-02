@@ -59,6 +59,5 @@ endif;
 [new_ptab+4] = RUNNING;
 multipop(BP);
 
-breakpoint;
 return;
 
