@@ -30,5 +30,4 @@ restore;
 
 SP = [([SYSTEM_STATUS_TABLE+1])*16 + PROCESS_TABLE +13];
 [[SYSTEM_STATUS_TABLE+1]*16 + PROCESS_TABLE + 9] = 0;
-
 ireturn;
