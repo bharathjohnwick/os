@@ -27,8 +27,6 @@ decl
 enddecl
 begin
 	t = initialize();
-
-
 	stu = alloc();
 	t = exposcall("Write", -2, "Post alloc", 0);
 	stu.name = "Student";
