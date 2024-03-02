@@ -140,12 +140,11 @@ endwhile;
 
 // start address
 [76*512] = [65*512 + 1];
-// user area stacK: pg 89
 
 [SYSTEM_STATUS_TABLE + 3] = 0;
 i = 0;
 [SYSTEM_STATUS_TABLE + 2] = 128-76;
-while (i <= 80) do
+while (i <= 82) do
 	[MEMORY_FREE_LIST+i] = 1;
 	i = i + 1;
 endwhile;

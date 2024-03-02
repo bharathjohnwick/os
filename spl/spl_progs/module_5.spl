@@ -35,9 +35,6 @@ while (new_pid != cur_pid) do
 		new_pid = (new_pid+1);
 	endif;
 endwhile;
-if (alive == 1) then
-	print("Done");
-endif;
 if ([PROCESS_TABLE + new_pid*16 + 4] != READY && 
 	[PROCESS_TABLE + new_pid*16 + 4] != CREATED) then
 	new_pid = 0;
@@ -62,5 +59,6 @@ endif;
 [new_ptab+4] = RUNNING;
 multipop(BP);
 
+breakpoint;
 return;
 
