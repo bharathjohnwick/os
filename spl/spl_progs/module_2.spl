@@ -41,6 +41,7 @@ if (func_num == RELEASE_PAGE) then
 	return;
 endif;
 if (func_num == GET_CODE_PAGE) then
+	
 	alias blk_no R10;
 	alias pid R11;
 
@@ -53,10 +54,13 @@ if (func_num == GET_CODE_PAGE) then
 	while (i < MAX_PROC_NUM) do
 		j = 2;
 		while (j < 10) do
-			if ([DISK_MAP_TABLE + 10*i + j] != -1) then
+			if ([DISK_MAP_TABLE + 10*i + j] == blk_no) then
 				alias pg R3;
 				pg = [PAGE_TABLE_BASE + 20*i + 2*j];
 				if (pg != -1) then
+					print("FOUND!"");
+					print(i);
+					print(j);
 					[MEMORY_FREE_LIST + pg] = [MEMORY_FREE_LIST + pg] + 1;
 					R0 = pg;
 					return;

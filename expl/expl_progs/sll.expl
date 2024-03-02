@@ -1,39 +1,39 @@
 type
-Student {
-	str name;
-	int marks;
-}
 Node {
 	int val;
 	Node next;
 }
 endtype
 
-void printNodes(Node head) {
-decl
-	Node cur;
-enddecl
-begin
-	head = 
-end
-
-}
-
 int main() {
 decl
-	Node head;
-	Node tail;
 	int t;
+	int curVal;
+	int count;
+	int i;
+	Node head;
+	Node newNode;
 enddecl
 begin
 	t = initialize();
-	stu = alloc();
-	t = exposcall("Write", -2, "Post alloc", 0);
-	stu.name = "Student";
-	stu.marks = 100;
-	t = exposcall("Write", -2, stu.name, 0);
-	t = exposcall("Write", -2, stu.marks, 0);
-	free(stu);
+	head = null;
+	read(count);
+	write(count);
+	i = 0;
+	while (i < count) do
+		read(curVal);
+		newNode = alloc();
+		newNode.next = head;
+		newNode.val = curVal;
+		head = newNode;
+		i = i + 1;
+	endwhile;
+	newNode = head;
+	while (newNode != null) do
+		curVal = newNode.val;
+		write(curVal);
+		newNode = newNode.next;
+	endwhile;
 	return 0;
 end
 }

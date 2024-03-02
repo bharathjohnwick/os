@@ -18,10 +18,9 @@ if (func_num == TERMINAL_WRITE) then
 	return;
 endif;
 if (func_num == TERMINAL_READ) then
-	
+
 	alias result_addr R3;
 	alias ptb R4;
-
 
 	multipush(R0, R1, R2, R3);
 	func_num = 8;
@@ -38,7 +37,7 @@ if (func_num == TERMINAL_READ) then
 	multipop(R0, R1, R2, R3);
 
 	ptb = [PROCESS_TABLE + 16*cur_pid + 14];
-	result_addr = [ptb + 2*(result_addr)/512]*512 + (result_addr)%512;
+	result_addr = [ptb + 2*(result_addr/512)]*512 + (result_addr%512);
 	[result_addr] = [PROCESS_TABLE + cur_pid*16 + 8];
 	return;
 endif;

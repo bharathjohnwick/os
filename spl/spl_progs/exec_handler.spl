@@ -44,7 +44,6 @@ if (i == MAX_FILE_NUM) then
 	goto _exit;
 endif;
 
-
 uap = [PROCESS_TABLE + pid*16 + 11];
 
 multipush(R0, R1, R2, R3, R4, R5, R6, R7, R8, R9, R10);
@@ -54,7 +53,6 @@ R2 = pid;
 call MOD_1;
 
 multipop(R0, R1, R2, R3, R4, R5, R6, R7, R8, R9, R10);
-
 
 [MEMORY_FREE_LIST+uap] = 1;
 [SYSTEM_STATUS_TABLE + 2] = [SYSTEM_STATUS_TABLE + 2] - 1;
@@ -137,15 +135,14 @@ alias dmt R2;
 dmt = DISK_MAP_TABLE + 10*pid;
 [dmt + 2] = -1;
 [dmt + 3] = -1;
-[dmt + 4] = -2;
-[dmt + 5] = [INODE_TABLE + 16*i + 8];
-[dmt + 6] = [INODE_TABLE + 16*i + 9];
-[dmt + 7] = [INODE_TABLE + 16*i + 10];
-[dmt + 8] = [INODE_TABLE + 16*i + 11];
+[dmt + 4] = [INODE_TABLE + 16*i + 8];
+[dmt + 5] = [INODE_TABLE + 16*i + 9];
+[dmt + 6] = [INODE_TABLE + 16*i + 10];
+[dmt + 7] = [INODE_TABLE + 16*i + 11];
+[dmt + 8] = -1;
 [dmt + 9] = -1;
-[dmt + 10] = -1;
 
-[PROCESS_TABLE + ([SYSTEM_STATUS_TABLE+1]*16) + 9] = 0;
+[PROCESS_TABLE + pid*16 + 9] = 0;
 SP = 512*8;
 
 ireturn;

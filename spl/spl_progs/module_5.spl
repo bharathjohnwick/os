@@ -2,7 +2,6 @@
 alias cur_pid R0;
 alias ptab R1;
 
-
 cur_pid = [SYSTEM_STATUS_TABLE + 1];
 ptab = PROCESS_TABLE + cur_pid * 16;
 
@@ -52,7 +51,6 @@ if ([new_ptab+4] == CREATED) then
 	[new_ptab+4] = RUNNING;
 	[new_ptab+9] = 0;
 	SP = [new_ptab+13];
-
 	ireturn;
 endif;
 

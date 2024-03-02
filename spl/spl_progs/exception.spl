@@ -1,4 +1,3 @@
-
 [PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE+1] + 9] = -1;
 [PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE+1] + 13] = SP;
 SP = [PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE+1] + 11]*512-1;
@@ -26,7 +25,7 @@ if (EC != 0) then
 	call MOD_5;
 endif;
 
-if ([PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE+1] + 12] == 512*8 - 1) then
+if ([PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE+1] + 13] == 512*8 - 1) then
 	print("Exception");
 	print("Stack");
 
@@ -47,6 +46,7 @@ if (EPN >= 4 && EPN <= 7) then
 	multipush(R8, R9);
 	R1 = GET_CODE_PAGE;
 	R2 = blk_no;
+	R3 = pid;
 	call MOD_2;
 	multipop(R8, R9);
 
@@ -97,4 +97,5 @@ phy = [ptbr + 2*(user_sp/512)];
 restore;
 
 SP = [PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE+1] + 13] + 1;
+
 ireturn;
