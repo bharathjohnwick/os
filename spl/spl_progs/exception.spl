@@ -8,6 +8,7 @@ multipush(EIP);
 
 if (EC != 0) then
 	print("Exception");
+	print([SYSTEM_STATUS_TABLE+1]);
 	if (EC == 1) then
 		print("Instruction");
 	endif;

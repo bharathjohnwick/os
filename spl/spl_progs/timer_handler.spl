@@ -1,21 +1,11 @@
+breakpoint;
+
 
 [PROCESS_TABLE + ([SYSTEM_STATUS_TABLE+1])*16 + 13] = SP;
 SP = [PROCESS_TABLE + ([SYSTEM_STATUS_TABLE+1])*16 + 11] * 512 - 1;
 
+
 backup;
-
-multipush(R0, R1);
-alias func_num R1;
-alias cur_pid R2;
-alias msg R3;
-
-func_num = 3;
-cur_pid = [SYSTEM_STATUS_TABLE + 1];
-msg = "timer";
-
-call MOD_4;
-
-multipop(R0, R1);
 
 alias current_pid R0;
 alias ptab_addr R1;
@@ -45,5 +35,6 @@ restore;
 SP = [([SYSTEM_STATUS_TABLE+1])*16 + PROCESS_TABLE +13];
 [[SYSTEM_STATUS_TABLE+1]*16 + PROCESS_TABLE + 9] = 0;
 
+breakpoint;
 
 ireturn;
