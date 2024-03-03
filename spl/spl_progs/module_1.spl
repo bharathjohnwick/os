@@ -86,6 +86,23 @@ if (func_num == FREE_PAGE_TABLE) then
 	endwhile;
 	return;
 endif;
+if (func_num == GET_PCB_ENTRY) then
+	alias pid R5;
+	pid = 0;
+	while (pid < MAX_PROC_NUM) do
+		if ([PROCESS_TABLE + pid*16 + 4] == TERMINATED) then
+			[PROCESS_TABLE + pid*16 + 4] = ALLOCATED;
+			[PROCESS_TABLE + pid*16 + 14] = PAGE_TABLE_BASE + 20*pid;
+			[PROCESS_TABLE + pid*16 + 15] = 10;
+			[PROCESS_TABLE + pid*16 + 1] = pid;
+			R0 = pid;
+			return;
+		endif;
+		pid = pid + 1;
+	endwhile;
+	R0 = -1;
+	return;
+endif;
 
 breakpoint;
 R0 = 1;

@@ -8,6 +8,7 @@ load --exhandler ../spl/spl_progs/exception.xsm
 load --int=7 ../spl/spl_progs/write_handler.xsm
 load --int=6 ../spl/spl_progs/read_handler.xsm
 load --int=9 ../spl/spl_progs/exec_handler.xsm
+load --int=8 ../spl/spl_progs/fork_handler.xsm
 load --init ../expl/expl_progs/shell.xsm
 load --idle ../expl/expl_progs/idle.xsm
 load --module 7 ../spl/spl_progs/module_7.xsm

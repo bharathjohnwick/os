@@ -15,7 +15,7 @@ loadi(40, 53);
 loadi(41, 54);
 
 // module 4
-loadi(48, 61);
+loadi(48, 61); 
 loadi(49, 62);
 
 // module 1
@@ -45,6 +45,10 @@ loadi(3, 16);
 // disk handler
 loadi(6, 19);
 loadi(7, 20);
+
+// int8
+loadi(18, 31);
+loadi(19, 32);
 
 // int7
 loadi(16, 29);

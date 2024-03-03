@@ -6,6 +6,7 @@ backup;
 multipush(EIP);
 
 if (EC != 0) then
+	breakpoint;
 	print("Exception");
 	print([SYSTEM_STATUS_TABLE+1]);
 	if (EC == 1) then
@@ -26,6 +27,7 @@ if (EC != 0) then
 endif;
 
 if ([PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE+1] + 13] == 512*8 - 1) then
+	breakpoint;
 	print("Exception");
 	print("Stack");
 
