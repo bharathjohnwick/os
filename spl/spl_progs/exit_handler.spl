@@ -1,28 +1,16 @@
+[PROCESS_TABLE + ([SYSTEM_STATUS_TABLE+1])*16 + 9] = 10;
+
 [PROCESS_TABLE + ([SYSTEM_STATUS_TABLE+1])*16 + 13] = SP;
 SP = [PROCESS_TABLE + ([SYSTEM_STATUS_TABLE+1])*16 + 11] * 512 - 1;
 
-alias cur_pid R0;
+alias cur_pid R4;
 cur_pid = [SYSTEM_STATUS_TABLE+1];
 
 print "EXIT";
-print [SYSTEM_STATUS_TABLE+1];
+print cur_pid;
 
-[PROCESS_TABLE + cur_pid*16 + 4] = TERMINATED;
-
-alias tmd R1;
-alias i R2;
-tmd = 1;
-i = 1;
-while (i < MAX_PROC_NUM) do
-	if ([PROCESS_TABLE + i*16 + 4] != TERMINATED) then
-		tmd = 0;
-		break;
-	endif;
-	i = i +1;
-endwhile;
-
-if (tmd == 1) then
-	halt;
-endif;
+R1 = EXIT_PROCESS;
+R2 = cur_pid;
+call MOD_1;
 
 call MOD_5;

@@ -1,0 +1,127 @@
+[PROCESS_TABLE + [SYSTEM_STATUS_TABLE+1]*16 + 9] = 8;
+
+alias user_sp R8;
+alias ret_loc R9;
+alias pid R10;
+alias new_pid R11;
+
+user_sp = SP;
+[PROCESS_TABLE + [SYSTEM_STATUS_TABLE+1]*16 + 13] = SP;
+SP = [PROCESS_TABLE + [SYSTEM_STATUS_TABLE+1]*16 + 11]*512 - 1;
+
+pid = [SYSTEM_STATUS_TABLE+1];
+ret_loc = (user_sp-1);
+ret_loc = [PTBR + 2*(ret_loc/512)]*512 + (ret_loc)%512;
+
+multipush(R8, R9, R10);
+R1 = GET_PCB_ENTRY;
+call MOD_1;
+multipop(R8, R9, R10);
+if (R0 == -1) then
+	[ret_loc] = -1;
+	goto _exit;
+endif;
+
+new_pid = R0;
+
+alias c_ptb R12;
+c_ptb = PAGE_TABLE_BASE + 20*new_pid;
+// stack
+multipush(R8, R9, R10, R11, R12);
+R1 = GET_FREE_PAGE;
+call MOD_2;
+multipop(R8, R9, R10, R11, R12);
+[c_ptb + 16] = R0;
+[c_ptb + 17] = "0110";
+
+multipush(R8, R9, R10, R11, R12);
+R1 = GET_FREE_PAGE;
+call MOD_2;
+multipop(R8, R9, R10, R11, R12);
+[c_ptb + 18] = R0;
+[c_ptb + 19] = "0110";
+
+// user area page
+multipush(R8, R9, R10, R11, R12);
+R1 = GET_FREE_PAGE;
+call MOD_2;
+multipop(R8, R9, R10, R11, R12);
+[PROCESS_TABLE + 16*new_pid + 11] = R0;
+
+// Process table
+alias c_pt R12;
+alias p_pt R13;
+c_pt = PROCESS_TABLE + 16*new_pid;
+p_pt = PROCESS_TABLE + 16*pid;
+
+[c_pt + 3] = [p_pt + 3];
+[c_pt + 6] = [p_pt + 6];
+[c_pt + 10] = [p_pt + 10];
+[c_pt + 7] = [p_pt + 7];
+[c_pt + 13] = [p_pt + 13];
+
+[c_pt + 9] = 0;
+[c_pt] = 0;
+[c_pt + 2] = pid;
+[c_pt + 4] = CREATED;
+
+alias c_dmt R12;
+alias p_dmt R13;
+alias i R14;
+c_dmt = DISK_MAP_TABLE + 10*new_pid;
+p_dmt = DISK_MAP_TABLE + 10*pid;
+i = 2;
+while (i < 10) do
+	[c_dmt + i] = [p_dmt + i];
+	i = i + 1;
+endwhile;
+
+alias c_ptb R12;
+alias p_ptb R13;
+c_ptb = PAGE_TABLE_BASE + 20*new_pid;
+p_ptb = PAGE_TABLE_BASE + 20*pid;
+
+[512*[PROCESS_TABLE + 16*new_pid + 11]] = BP;
+
+i = 0;
+while (i < 8) do
+	[c_ptb + 2*i] = [p_ptb + 2*i];
+	[c_ptb + 2*i + 1] = [p_ptb + 2*i + 1];
+	[MEMORY_FREE_LIST + [p_ptb + 2*i]] = [MEMORY_FREE_LIST + [p_ptb + 2*i]] + 1;
+	i = i + 1;
+endwhile;
+[c_ptb + 17] = [p_ptb + 17];
+[c_ptb + 19] = [p_ptb + 19];
+
+alias c_page R6;
+alias p_page R7;
+c_page = [c_ptb + 16];
+p_page = [p_ptb + 16];
+
+i = 0;
+while (i < 512) do
+	[c_page*512 + i] = [p_page*512 + i];
+	i = i + 1;
+endwhile;
+c_page = [c_ptb + 18];
+p_page = [p_ptb + 18];
+i = 0;
+while (i < 512) do
+	[c_page*512 + i] = [p_page*512 + i];
+	i = i + 1;
+endwhile;
+
+[ret_loc] = new_pid;
+
+ret_loc = (user_sp-1);
+ret_loc = [PAGE_TABLE_BASE + 20*new_pid + 2*(ret_loc/512)]*512 + (ret_loc)%512;
+[ret_loc] = 0;
+
+[PROCESS_TABLE + pid*16 + 9] = 0;
+SP = user_sp;
+ireturn;
+
+_exit:
+[PROCESS_TABLE + pid*16 + 9] = 0;
+SP = user_sp;
+ireturn;
