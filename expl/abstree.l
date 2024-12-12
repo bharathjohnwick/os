@@ -5,6 +5,7 @@
 
 	#include "y.tab.h"
     #include "abstree.h"
+    #include "symboltable.h"
 	
 	union Constant number;
 	char *variable, *p, var[10];
@@ -69,7 +70,9 @@
 			variable = malloc(yyleng * sizeof(char));
 			strcpy(variable, yytext);
 			temp = TLookup("integer");  // default type for any word (variable or string) is int
-			yylval.nptr = TreeCreate(temp, NODE_ID, variable, &yytext, NULL, NULL, NULL, NULL); 
+            union Constant ucst;
+            ucst.strval = yytext;
+			yylval.nptr = TreeCreate(temp, NODE_ID, variable, &ucst, NULL, NULL, NULL, NULL); 
 			return ID;
 		}
 \"(\\.|[^\\\"])*\"	{
@@ -84,7 +87,9 @@
 						var[iterator] = '\0';
 						p = var;
 						temp = TLookup("string");
-						yylval.nptr = TreeCreate(temp, NODE_STRVAL, var, &p, NULL, NULL, NULL, NULL);
+                        union Constant ucst;
+                        ucst.strval = p;
+						yylval.nptr = TreeCreate(temp, NODE_STRVAL, var, &ucst, NULL, NULL, NULL, NULL);
 						return STRVAL;
 					}
 "//"(.)*	{}

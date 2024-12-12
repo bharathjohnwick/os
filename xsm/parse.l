@@ -6,7 +6,7 @@
 
    YYSTYPE yylval;
 
-   int machine_serve_instruction (char *buffer, yy_size_t *read_bytes, int max);
+   int machine_serve_instruction (char *buffer, int *read_bytes, int max);
 
    void lexer_buffer_reset ()
    {

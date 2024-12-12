@@ -12,7 +12,7 @@ struct Fieldlist
 	struct Typetable *type; //pointer to type table entry of the field's type
 	struct Fieldlist *next; //pointer to the next field
 };
-struct Fieldlist *Fhead, *Ftail;
+extern struct Fieldlist *Fhead, *Ftail;
 struct Fieldlist *FLookup(char *name, struct Fieldlist *list);
 void FInstall(struct Typetable *type, char *name);
 
@@ -23,7 +23,7 @@ struct Typetable
 	struct Fieldlist *fields; //pointer to the head of fields list
 	struct Typetable *next;   // pointer to the next type table entry
 };
-struct Typetable *Thead, *Ttail;
+extern struct Typetable *Thead, *Ttail;
 struct Typetable *TLookup(char *name);
 void TInstall(char *name, int size, struct Fieldlist *fields);
 
@@ -34,7 +34,7 @@ struct Paramstruct
 	struct Typetable *type;
 	struct Paramstruct *next;
 };
-struct Paramstruct *Phead = NULL, *Ptail = NULL;
+extern struct Paramstruct *Phead, *Ptail;// = NULL;
 void PInstall(char *name, struct Typetable *type);
 struct Paramstruct *PLookup(char *name);
 
@@ -53,8 +53,8 @@ struct Gsymbol *GLookup(char *name);														// Look up for a global identi
 void GInstall(char *name, struct Typetable *type, int size, struct Paramstruct *paramlist); // Installation
 struct Gsymbol *Ghead, *Gtail;
 
-int totalCount = 4096;
-int fbind = 0;
+extern int totalCount;// = 4096;
+extern int fbind;// = 0;
 
 struct Lsymbol
 {

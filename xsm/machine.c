@@ -144,7 +144,7 @@ int machine_instr_req_privilege(int opcode)
 }
 
 /* An interface between lexer and machine */
-int machine_serve_instruction(char *buffer, unsigned long *read_bytes, int max)
+int machine_serve_instruction(char *buffer, int *read_bytes, int max)
 {
 
     int ip_val, i, j, bytes_to_read;
