@@ -42,9 +42,9 @@ Proceed to [ExpOS Installation and Setup](#expos-installation-and-setup)
 Run the following command in your $HOME directory
 ```git clone https://github.com/aadit-n3rdy/myexpos```
 
-2. Run the following command to install the necessary packages 
-**For Ubuntu WSL or Debian-based distros)**:```sudo apt-get install libreadline-dev flex bison make gcc wget curl``` \
-**For macOS users**: ```brew install readline flex bison make gcc wget curl``` \
+2. Run the following command to install the necessary packages\
+**For Ubuntu WSL or Debian-based distros)**:```sudo apt-get install libreadline-dev flex bison make gcc wget curl```\
+**For macOS users**: ```brew install readline flex bison make gcc wget curl```
 
 3. `cd` into the expOS directory:
 Run the following command:
