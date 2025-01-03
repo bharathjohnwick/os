@@ -25,6 +25,15 @@ Open Windows Terminal, and select “Ubuntu” in the dropdown menu (near the ne
 The first time you do this, Ubuntu may take a while to load.
 WSL Setup is now done, proceed to [ExpOS Installation and Setup](#expos-installation-and-setup)
 
+### MacOS Users:
+
+1. **Install Homebrew:**\
+Install Homebrew by following the instructions here: [https://brew.sh/]()
+
+2. **ExpOS Setup**\
+Proceed to [ExpOS Installation and Setup](#expos-installation-and-setup)
+
+
 ## ExpOS Installation and Setup
 
 **NOTE: Do NOT use the default expOS installer script**
@@ -33,8 +42,9 @@ WSL Setup is now done, proceed to [ExpOS Installation and Setup](#expos-installa
 Run the following command in your $HOME directory
 ```git clone https://github.com/aadit-n3rdy/myexpos```
 
-2. Run the following command to install the necessary packages (for Ubuntu WSL or Debian-based distros).
-```sudo apt-get install libreadline-dev flex bison make gcc wget curl```
+2. Run the following command to install the necessary packages 
+**For Ubuntu WSL or Debian-based distros)**:```sudo apt-get install libreadline-dev flex bison make gcc wget curl``` \
+**For macOS users**: ```brew install readline flex bison make gcc wget curl``` \
 
 3. `cd` into the expOS directory:
 Run the following command:
